@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetic Music Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0d0d0d;
+            color: white;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .player {
+            width: 400px;
+            background: #1c1c1c;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+        .cover {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .controls button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .playlist {
+            list-style: none;
+            padding: 0;
+            max-height: 180px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        .playlist li {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+        }
+        .playlist li:hover {
+            background-color: #2a2a2a;
+        }
+        .playlist .cover {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <img id="coverArt" src="default-cover.jpg" class="cover" alt="Cover Art">
+        <audio id="audioPlayer" controls>
+            Your browser does not support the audio element.
+        </audio>
+        <ul class="playlist" id="playlist"></ul>
+        <div class="controls">
+            <button onclick="prevSong()"><i class="fa fa-backward"></i></button>
+            <button onclick="togglePlayPause()"><i class="fa fa-play" id="playPauseIcon"></i></button>
+            <button onclick="nextSong()"><i class="fa fa-forward"></i></button>
+        </div>
+    </div>
+    
+    <script>
+        const songs = [];
+        for(let i = 1; i <= 20; i++) {
+            songs.push({ title: `Song ${i}`, file: `song${i}.mp3`, cover: "default-cover.jpg" });
+        }
+
+        const playlist = document.getElementById("playlist");
+        const audioPlayer = document.getElementById("audioPlayer");
+        const coverArt = document.getElementById("coverArt");
+        const playPauseIcon = document.getElementById("playPauseIcon");
+        let currentIndex = 0;
+
+        function loadSong(index) {
+            audioPlayer.src = songs[index].file;
+            coverArt.src = songs[index].cover;
+            audioPlayer.play();
+            playPauseIcon.classList.replace("fa-play", "fa-pause");
+        }
+
+        function nextSong() {
+            currentIndex = (currentIndex + 1) % songs.length;
+            loadSong(currentIndex);
+        }
+
+        function prevSong() {
+            currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+            loadSong(currentIndex);
+        }
+
+        function togglePlayPause() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseIcon.classList.replace("fa-play", "fa-pause");
+            } else {
+                audioPlayer.pause();
+                playPauseIcon.classList.replace("fa-pause", "fa-play");
+            }
+        }
+
+        songs.forEach((song, index) => {
+            let li = document.createElement("li");
+            let img = document.createElement("img");
+            img.src = song.cover;
+            img.classList.add("cover");
+            let span = document.createElement("span");
+            span.textContent = song.title;
+            li.appendChild(img);
+            li.appendChild(span);
+            li.onclick = () => {
+                currentIndex = index;
+                loadSong(index);
+            };
+            playlist.appendChild(li);
+        });
+    </script>
+</body>
+</html>
