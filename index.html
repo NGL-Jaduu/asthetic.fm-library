@@ -77,7 +77,7 @@
     </style>
 </head>
 <body>
-    <h1>Phonk 3D Music Library</h1>
+    <h1>FM Music Library</h1>
     <div class="library" id="library"></div>
     <div class="controls">
         <button onclick="prevSong()">⏮</button>
@@ -88,7 +88,7 @@
     <script>
         const songs = [];
         for(let i = 1; i <= 28; i++) {
-            songs.push({ title: `Phonk Track ${i}`, file: `song${i}.mp3`, cover: "default-cover.jpg" });
+            songs.push({ title: `FM Track ${i}`, file: `song${i}.mp3`, cover: "default-cover.jpg" });
         }
 
         const library = document.getElementById("library");
