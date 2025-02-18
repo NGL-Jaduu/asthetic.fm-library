@@ -3,101 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetic Music Player</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Aesthetic 3D Music Player</title>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #0d0d0d;
+            background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
             color: white;
             margin: 0;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
+            overflow: hidden;
         }
-        .player {
-            width: 400px;
-            background: #1c1c1c;
+        .library {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(24, 24, 24, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            backdrop-filter: blur(15px);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+        .song-card {
+            background: #222;
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 255, 100, 0.4);
             text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .song-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 255, 100, 0.5);
         }
         .cover {
-            width: 100px;
-            height: 100px;
+            width: 100%;
+            height: 150px;
             border-radius: 10px;
-            margin-bottom: 10px;
+            background: #555;
+            object-fit: cover;
         }
         .controls {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 20px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         .controls button {
-            background: none;
+            background: #1DB954;
             border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s;
+            font-size: 18px;
             color: white;
-            font-size: 24px;
-            cursor: pointer;
         }
-        .playlist {
-            list-style: none;
-            padding: 0;
-            max-height: 180px;
-            overflow-y: auto;
-            text-align: left;
-        }
-        .playlist li {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #333;
-        }
-        .playlist li:hover {
-            background-color: #2a2a2a;
-        }
-        .playlist .cover {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
+        .controls button:hover {
+            background: #17a74a;
+            transform: scale(1.2);
         }
     </style>
 </head>
 <body>
-    <div class="player">
-        <img id="coverArt" src="default-cover.jpg" class="cover" alt="Cover Art">
-        <audio id="audioPlayer" controls>
-            Your browser does not support the audio element.
-        </audio>
-        <ul class="playlist" id="playlist"></ul>
-        <div class="controls">
-            <button onclick="prevSong()"><i class="fa fa-backward"></i></button>
-            <button onclick="togglePlayPause()"><i class="fa fa-play" id="playPauseIcon"></i></button>
-            <button onclick="nextSong()"><i class="fa fa-forward"></i></button>
-        </div>
+    <h1>Phonk 3D Music Library</h1>
+    <div class="library" id="library"></div>
+    <div class="controls">
+        <button onclick="prevSong()">⏮</button>
+        <button onclick="togglePlayPause()" id="playPauseBtn">▶️</button>
+        <button onclick="nextSong()">⏭</button>
     </div>
-    
+    <audio id="audioPlayer"></audio>
     <script>
         const songs = [];
-        for(let i = 1; i <= 20; i++) {
-            songs.push({ title: `Song ${i}`, file: `song${i}.mp3`, cover: "default-cover.jpg" });
+        for(let i = 1; i <= 28; i++) {
+            songs.push({ title: `Phonk Track ${i}`, file: `song${i}.mp3`, cover: "default-cover.jpg" });
         }
 
-        const playlist = document.getElementById("playlist");
+        const library = document.getElementById("library");
         const audioPlayer = document.getElementById("audioPlayer");
-        const coverArt = document.getElementById("coverArt");
-        const playPauseIcon = document.getElementById("playPauseIcon");
+        const playPauseBtn = document.getElementById("playPauseBtn");
         let currentIndex = 0;
 
         function loadSong(index) {
             audioPlayer.src = songs[index].file;
-            coverArt.src = songs[index].cover;
             audioPlayer.play();
-            playPauseIcon.classList.replace("fa-play", "fa-pause");
+            playPauseBtn.textContent = "⏸";
         }
 
         function nextSong() {
@@ -113,27 +115,28 @@
         function togglePlayPause() {
             if (audioPlayer.paused) {
                 audioPlayer.play();
-                playPauseIcon.classList.replace("fa-play", "fa-pause");
+                playPauseBtn.textContent = "⏸";
             } else {
                 audioPlayer.pause();
-                playPauseIcon.classList.replace("fa-pause", "fa-play");
+                playPauseBtn.textContent = "▶️";
             }
         }
 
         songs.forEach((song, index) => {
-            let li = document.createElement("li");
+            let div = document.createElement("div");
+            div.classList.add("song-card");
             let img = document.createElement("img");
             img.src = song.cover;
             img.classList.add("cover");
             let span = document.createElement("span");
             span.textContent = song.title;
-            li.appendChild(img);
-            li.appendChild(span);
-            li.onclick = () => {
+            div.appendChild(img);
+            div.appendChild(span);
+            div.onclick = () => {
                 currentIndex = index;
                 loadSong(index);
             };
-            playlist.appendChild(li);
+            library.appendChild(div);
         });
     </script>
 </body>
